@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  api-client:
+    build:
+      context: ./api-client
+    ports:
+      - "8080:8080"
+    networks:
+      - my_network
+
+  postgres-client:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: clientDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+    - my_network
+
+  api-restaurante:
+    build:
+      context: ./api-restaurante
+    ports:
+      - "8082:8082"
+    networks:
+      - my_network
+  postgres-restaurante:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: restauranteDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - my_network
+  api-reserva:
+    build:
+      context: ./api-reserva
+    ports:
+      - "8081:8081"
+    networks:
+      - my_network
+  postgres-reserva:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: reservaDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+    - my_network
+
+networks:
+  my_network:
