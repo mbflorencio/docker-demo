@@ -1,0 +1,204 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Docker Demo — APIs",
+    "description": "Coleção para testar os serviços deste repositório.\n\n**Portas (cada API em uma porta fixa)**\n| Serviço | Porta |\n|---------|-------|\n| api-client | 8080 |\n| api-reserva | 8081 |\n| api-restaurante | 8082 |\n| api-find | 8083 |\n\n**Swagger UI** (onde configurado): `/swagger-ui.html` ou `/swagger-ui/index.html`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl_client", "value": "http://localhost:8080" },
+    { "key": "baseUrl_find", "value": "http://localhost:8083" },
+    { "key": "baseUrl_reserva", "value": "http://localhost:8081" },
+    { "key": "baseUrl_restaurante", "value": "http://localhost:8082" },
+    { "key": "client_id", "value": "1" },
+    { "key": "cpf_chave", "value": "12345678901" },
+    { "key": "reserva_id", "value": "1" },
+    { "key": "restaurante_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "api-client :8080",
+      "item": [
+        {
+          "name": "GET Cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl_client}}/client/{{client_id}}",
+            "description": "Busca cliente por id. Use id `-1` para forçar fallback do circuit breaker (Resilience4j)."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Salvar cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Silva\",\n  \"description\": \"Cliente teste\"\n}"
+            },
+            "url": "{{baseUrl_client}}/client/",
+            "description": "Modelo `Client`: campos `name`, `description`. Se o binding JSON não funcionar, o controller pode precisar de `@RequestBody` no código."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "api-find :8083",
+      "item": [
+        {
+          "name": "POST Autenticação",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"admin\",\n  \"senha\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl_find}}/api/autenticacao",
+            "description": "Retorna um mapa com chave `token` (valor fixo no código atual)."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cpf\": \"12345678901\",\n  \"nome\": \"Maria Silva\",\n  \"email\": \"maria@email.com\",\n  \"telefone\": \"11999990000\",\n  \"rua\": \"Rua A\",\n  \"cidade\": \"São Paulo\",\n  \"estado\": \"SP\",\n  \"cep\": \"01310100\",\n  \"pais\": \"Brasil\"\n}"
+            },
+            "url": "{{baseUrl_find}}/api/cliente"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Cartão",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cpf\": \"12345678901\",\n  \"limite\": 5000,\n  \"numero\": \"4111111111111111\",\n  \"data_validade\": \"12/2030\",\n  \"cvv\": \"123\"\n}"
+            },
+            "url": "{{baseUrl_find}}/api/cartao"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Pagamento",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"valor\": 99.90,\n  \"cpf\": \"12345678901\",\n  \"ccv\": \"123\",\n  \"numero\": \"4111111111111111\",\n  \"data_validade\": \"12/2030\"\n}"
+            },
+            "url": "{{baseUrl_find}}/api/pagamentos"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Pagamentos por CPF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl_find}}/api/pagamentos/cliente/{{cpf_chave}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "api-reserva :8081",
+      "item": [
+        {
+          "name": "GET Reserva por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl_reserva}}/reserva/{{reserva_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Listar reservas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl_reserva}}/reserva/listar"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Salvar reserva",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mesa 5\",\n  \"description\": \"Jantar reserva\"\n}"
+            },
+            "url": "{{baseUrl_reserva}}/reserva/salvar",
+            "description": "Campos do modelo `Reserva`: `name`, `description`. Inclua `@RequestBody` no controller se o JSON não for aceito."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "api-restaurante :8082",
+      "item": [
+        {
+          "name": "GET Restaurante por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl_restaurante}}/restaurante/{{restaurante_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Listar restaurantes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl_restaurante}}/restaurante/"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Salvar restaurante",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Restaurante Sabor\",\n  \"description\": \"Cozinha brasileira\"\n}"
+            },
+            "url": "{{baseUrl_restaurante}}/restaurante/",
+            "description": "Campos do modelo `Restaurante`: `name`, `description`. Pode ser necessário `@RequestBody` no controller."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
