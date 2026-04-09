@@ -2,31 +2,32 @@ package br.com.mf.controllers;
 
 import br.com.mf.model.Client;
 import br.com.mf.service.ClientService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/client")
+@CircuitBreaker(name = "clientCircuitService", fallbackMethod = "fallback")
 public class ClientController  {
 
     @Autowired ClientService service;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public Client getClientId(@PathVariable Long idClient){
-        return service.findById(idClient);
+    @GetMapping("/{id}")
+    public Client getClientId(@PathVariable Long id){
+        if (id == -1) {
+            throw new RuntimeException("Client service unavailable");
+        }
+        return service.findById(id);
     }
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public List<Client> getClients(){
-        return service.findAll();
+    public Client fallback(Long id, Throwable throwable) {
+        System.out.println("Fallback called due to: " + throwable.getMessage());
+        return new Client(id, "Fallback Client","Fallback");
     }
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.OK)
-    public Client salvar(Client client){
+
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Client salvar(@RequestBody Client client) {
         return service.save(client);
     }
 }

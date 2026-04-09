@@ -15,11 +15,13 @@ public class ClientService {
     public Client save(Client client){
         return repo.save(client);
     }
-    public Client findById(Long idClient){
-        return repo.findById(idClient).get();
+    public Client findByCpf(String cpf){
+        return repo.findByCpf(cpf);
     }
     public List<Client> findAll(){
         List<Client> list = repo.findAll();
         return list;
     }
 }
+
+

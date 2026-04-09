@@ -1,5 +1,6 @@
 package br.com.mf.model;
 
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,9 +10,26 @@ import lombok.Data;
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id = 0;
+    private long id;
+    @Column(name="cpf")
+    private String cpf;
     @Column(name="name")
-    private String name;
-    @Column(name="description")
-    private String description;
+    private String nome;
+    @Column(name="email")
+    private String email;
+    @Column(name="telefone")
+    private String telefone;
+    @Column(name="rua")
+    private String rua;
+    @Column(name="cidade")
+    private String cidade;
+    @Column(name="estado")
+    private String estado;
+    @Column(name="cep")
+    private String cep;
+    @Column(name="pais")
+    private String pais;
+
+
+
 }

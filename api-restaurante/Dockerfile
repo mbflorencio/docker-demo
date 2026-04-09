@@ -1,14 +1,13 @@
-FROM maven:3.8.4 AS builder
+FROM maven:3.9-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
 COPY pom.xml .
-COPY ../pom.xml pom.xml.parent
 COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
